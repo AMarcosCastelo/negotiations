@@ -1,17 +1,17 @@
 class ProxyFactory {
-  static create(objeto, props, acao) {
+  static create(obj, props, action) {
     
-    return new Proxy(objeto, {
+    return new Proxy(obj, {
             
       get(target, prop, receiver) {
           
-        if(props.includes(prop) && ProxyFactory._ehFuncao(target[prop])) {
+        if(props.includes(prop) && ProxyFactory._isFunction(target[prop])) {
             
           return function() {
               
-            let retorno = Reflect.apply(target[prop], target, arguments);
-            acao(target);
-            return retorno;
+            let giveBack = Reflect.apply(target[prop], target, arguments);
+            action(target);
+            return giveBack;
           }
         }
           
@@ -20,15 +20,15 @@ class ProxyFactory {
       
       set(target, prop, value, receiver) {
           
-        let retorno = Reflect.set(target, prop, value, receiver);
-        if(props.includes(prop)) acao(target);
-        return retorno;
+        let giveBack = Reflect.set(target, prop, value, receiver);
+        if(props.includes(prop)) action(target);
+        return giveBack;
       }
     });
   };
     
-  static _ehFuncao(func) {
+  static _isFunction(func) {
       
     return typeof(func) == typeof(Function);
   };
-}
+};

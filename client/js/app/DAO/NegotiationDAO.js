@@ -1,4 +1,4 @@
-class NegociacaoDAO {
+class NegotiationDAO {
   constructor(connection) {
     this._connection = connection;
     this._store = 'negotiations';
@@ -10,7 +10,7 @@ class NegociacaoDAO {
         .objectStore(this._store)
           .add(negotiation);
 
-      request.onsuccess = (e) => {
+      request.onsuccess = () => {
         resolve();
       };
 
@@ -27,17 +27,17 @@ class NegociacaoDAO {
       let cursor = this._connection.transaction([this._store], 'readwrite')
         .objectStore(this._store).openCursor();
 
-      let negociacoes = [];
+      let negotiations = [];
 
       cursor.onsuccess = (e) => {
         let current = e.target.result;
 
         if (current) {
           let data = current.value;
-          negociacoes.push(new Negociacao(data._data, data._quantidade, data._valor));
+          negotiations.push(new Negotiation(data._date, data._qty, data._value));
           current.continue();
         } else {
-          resolve(negociacoes);
+          resolve(negotiations);
         }
       };
 
@@ -57,7 +57,7 @@ class NegociacaoDAO {
       request.onsuccess = () => resolve('Negociaçōes removidas com sucesso.');
       request.onerror = (e) => {
         console.log(e.target.error);
-        reject('Negociaçōes removidas com sucesso.')
+        reject('Negociaçōes removidas com sucesso.');
       };
     });
   };

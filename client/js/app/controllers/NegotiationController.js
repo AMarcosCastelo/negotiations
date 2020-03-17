@@ -1,7 +1,7 @@
 class NegotiationController {
   constructor() {
     let $ = document.querySelector.bind(document);
-    
+
     this._inputDate = $('#date');
     this._inputQty = $('#qty');
     this._inputValue = $('#value');
@@ -12,7 +12,7 @@ class NegotiationController {
       new NegotiationsView($('#negotiationsView')),
       'add', 'clear' , 'orderBy', 'reverseOrder'
     );
-    
+
     this._message = new Bind(
       new Message(), new MessageView($('#messageView')),
       'text'
@@ -28,7 +28,7 @@ class NegotiationController {
         this._message.text = error;
       });
   };
-  
+
   add(event) {
     event.preventDefault();
 
@@ -43,7 +43,7 @@ class NegotiationController {
           });
       }).catch((error) => this._message.text = error);
   };
-  
+
   importNegotiations() {
     let service = new NegotiationService();
     service
@@ -57,7 +57,7 @@ class NegotiationController {
         this._message.text = erro;
       });
   };
-  
+
   delete() {
     ConnectionFactory.getConnection().then((connection) => new NegotiationDAO(connection))
       .then((dao) => dao.clearAll()).then((mensagem) => {
@@ -66,7 +66,7 @@ class NegotiationController {
         this._negotiationsList.clear();
       });
   };
-  
+
   _criateNegotiation() {
       
     return new Negotiation(
@@ -85,7 +85,7 @@ class NegotiationController {
   
   orderBy(column) {
       
-    if(this._currentOrder == column) {
+    if(this._currentOrder === column) {
       this._negotiationsList.reverseOrder(); 
     } else {
       this._negotiationsList.orderBy((p, s) => p[column] - s[column]);    

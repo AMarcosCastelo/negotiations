@@ -27,11 +27,11 @@ var ConnectionFactory = (function () {
             close = connection.close.bind(connection);
             connection.close = () => {
               throw new Error('Você não pode fechar diretamente a conexão');
-            }
+            };
           }
           resolve(connection);
         };
-        
+
         openRequest.onerror = (e) => {
           console.log(e.target.result);
           reject(e.target.error.name);
@@ -41,7 +41,7 @@ var ConnectionFactory = (function () {
     
     static _createStores(connection) {
       stores.forEach((store) => {
-        if (connection.objectStoreNames.contains(store)) 
+        if (connection.objectStoreNames.contains(store))
           connection.deleteObjectStore(store);
     
         connection.createObjectStore(store, { autoIncrement: true});
@@ -54,6 +54,5 @@ var ConnectionFactory = (function () {
         connection = null;
       }
     };
-
   };
 })();

@@ -1,14 +1,14 @@
 class NegotiationController {
   constructor() {
-    let $ = document.querySelector.bind(document);
+    const $ = document.querySelector.bind(document);
 
     this._inputDate = $('#date');
     this._inputQty = $('#qty');
     this._inputValue = $('#value');
     this._currentOrder = '';
-
+    this._service = new NegotiationService();
     this._negotiationsList = new Bind(
-      new NegotiationsList(), 
+      new NegotiationsList(),
       new NegotiationsView($('#negotiationsView')),
       'add', 'clear' , 'orderBy', 'reverseOrder'
     );
@@ -17,54 +17,48 @@ class NegotiationController {
       new Message(), new MessageView($('#messageView')),
       'text'
     );
+    this._init();
+  };
 
-    ConnectionFactory.getConnection().then((connection) => new NegotiationDAO(connection))
-      .then((dao) => dao.listAll()).then((negotiations) => 
-        negotiations.forEach((negotiation) => 
-          this._negotiationsList.add(negotiation)
-        )
-      ).catch((error) => {
-        console.log(error);
-        this._message.text = error;
-      });
+  _init() {
+    this._importNegotiations();
+
+    this._service.list().then((negotiations) =>
+      negotiations.forEach((negotiation) => this._negotiationsList.add(negotiation))
+    ).catch((error) => this._message.text = error);
+
+    setInterval(() => {
+      this._importNegotiations();
+    }, 3000);
   };
 
   add(event) {
     event.preventDefault();
+    let negotiation = this._criateNegotiation();
 
-    ConnectionFactory.getConnection()
-      .then((connection) => {
-        let negotiation = this._criateNegotiation();
-        new NegotiationDAO(connection).add(negotiation)
-          .then(() => {
-            this._negotiationsList.add(negotiation);
-            this._message.text = 'Negociação adicionada com sucesso'; 
-            this._clearForm();
-          });
-      }).catch((error) => this._message.text = error);
+    this._service.register(negotiation)
+      .then((message) => {
+        this._negotiationsList.add(negotiation)
+        this._message.text = message;
+        this._clearForm();
+      })
+      .catch((error) => this._message.text = error);
   };
 
-  importNegotiations() {
-    let service = new NegotiationService();
-    service
-      .getNegotiations()
+  _importNegotiations() {
+    this._service.import(this._negotiationsList.negotiations)
       .then(negotiations => negotiations.forEach(negotiation => {
         this._negotiationsList.add(negotiation);
-        this._message.text = 'Negociações do período importadas'; 
+        this._message.text = 'Negociações do período importadas';
       }))
-      .catch(erro => {
-        console.log(erro);
-        this._message.text = erro;
-      });
+      .catch(erro => this._message.text = erro);
   };
 
   delete() {
-    ConnectionFactory.getConnection().then((connection) => new NegotiationDAO(connection))
-      .then((dao) => dao.clearAll()).then((mensagem) => {
-
-        this._message.text = mensagem;
-        this._negotiationsList.clear();
-      });
+    this._service.clear().then((message) => {
+      this._message.text = message;
+      this._negotiationsList.clear();
+    });
   };
 
   _criateNegotiation() {

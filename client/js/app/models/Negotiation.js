@@ -5,6 +5,10 @@ class Negotiation {
     this._value = value;
     Object.freeze(this);
   };
+
+  isEquals(anotherNegotiation) {        
+    return JSON.stringify(this) === JSON.stringify(anotherNegotiation)
+  }
   
   get amount() {
     return this._qty * this._value;

@@ -3,6 +3,52 @@ class NegotiationService {
   constructor() {
     this._http = new HttpService();
   };
+
+  register(negotiation) {
+    return ConnectionFactory.getConnection()
+      .then((connection) => new NegotiationDAO(connection))
+      .then((dao) => dao.add(negotiation))
+      .then(() => 'Negociação adicionada com sucesso')
+      .catch((error) => {
+        console.log(error)
+        throw new Error('Não foi possível adicionar a negociação');
+      });
+  };
+
+  list() {
+    return ConnectionFactory.getConnection()
+      .then((connection) => new NegotiationDAO(connection))
+      .then((dao) => dao.listAll())
+      .catch((error) => {
+        console.log(error)
+        throw new Error('Não foi possível obter as negociações');
+      });
+  };
+
+  clear() {
+    return ConnectionFactory.getConnection().then((connection) => 
+      new NegotiationDAO(connection))
+      .then((dao) => dao.clearAll())
+      .then(() => 'Negociações apagadas com sucesso')
+      .catch((error) => {
+        console.log(error);
+        throw new Error('Não foi possível apagar as negociações')
+      })
+  };
+
+  import(currentList) {
+    return this.getNegotiations()
+      .then((negotiations) =>
+        negotiations.filter((negotiation) =>
+          !currentList.some((existingNegotiation) =>
+            negotiation.isEquals(existingNegotiation)
+          )
+        )
+      ).catch((error) => {
+        console.log(error);
+        throw new Error('Não foi possível importar negociações');
+      })
+  }
   
   getTradesOfTheWeek() {
               
@@ -11,8 +57,8 @@ class NegotiationService {
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
-      .catch((erro) => {
-        console.log(erro);
+      .catch((error) => {
+        console.log(error);
         throw new Error('Não foi possível obter as negociações da semana');
       });
   }
@@ -23,8 +69,8 @@ class NegotiationService {
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
-      .catch((erro) => {
-        console.log(erro);
+      .catch((error) => {
+        console.log(error);
         throw new Error('Não foi possível obter as negociações da semana anterior');
       });
   };
@@ -36,8 +82,8 @@ class NegotiationService {
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
-      .catch((erro) => {
-        console.log(erro);
+      .catch((error) => {
+        console.log(error);
         throw new Error('Não foi possível obter as negociações da semana retrasada');
       });
   };
@@ -53,9 +99,9 @@ class NegotiationService {
         .reduce((datas, period) => datas.concat(period), [])
         .map((data) => new Negotiation(new Date(data.date), data.qty, data.value));
       return negotiations;
-    }).catch((erro) => {
-        console.log(erro);
-        throw new Error(erro);
+    }).catch((error) => {
+        console.log(error);
+        throw new Error(error);
     });
 	};
 };

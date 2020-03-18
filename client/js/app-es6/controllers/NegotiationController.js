@@ -1,3 +1,12 @@
+import {Message} from '../models/Message';
+import {NegotiationsList} from '../models/NegotiationList';
+import {NegotiationsView} from '../views/NegotiationsView';
+import {MessageView} from '../views/MessageView';
+import {NegotiationService} from '../services/NegotiationService';
+import {DateHelper} from '../helpers/DateHelper';
+import {Bind} from '../helpers/Bind';
+import {Negotiation} from '../models/Negotiation';
+
 class NegotiationController {
   constructor() {
     const $ = document.querySelector.bind(document);
@@ -86,4 +95,9 @@ class NegotiationController {
     }
     this._currentOrder = column;    
   };
-}
+};
+
+let negotiationController = new NegotiationController();
+export function currentInstance() {
+  return negotiationController;
+};

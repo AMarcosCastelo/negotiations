@@ -3,7 +3,7 @@
 System.register([], function (_export, _context) {
   "use strict";
 
-  var View;
+  var DateHelper;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -30,29 +30,21 @@ System.register([], function (_export, _context) {
   return {
     setters: [],
     execute: function () {
-      _export("View", View = function () {
-        function View(element) {
-          _classCallCheck(this, View);
-
-          this._element = element;
+      DateHelper = function () {
+        function DateHelper() {
+          _classCallCheck(this, DateHelper);
         }
 
-        _createClass(View, [{
-          key: "template",
-          value: function template() {
-            throw new Error('O método template deve ser implementado');
-          }
+        _createClass(DateHelper, [{
+          key: "dateToString",
+          value: function dateToString() {}
         }, {
-          key: "update",
-          value: function update(model) {
-            this._element.innerHTML = this.template(model);
-          }
+          key: "stringToDate",
+          value: function stringToDate() {}
         }]);
 
-        return View;
-      }());
-
-      _export("View", View);
+        return DateHelper;
+      }();
 
       ;
     }

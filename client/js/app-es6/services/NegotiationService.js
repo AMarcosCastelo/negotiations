@@ -58,7 +58,7 @@ export class NegotiationService {
   getTradesOfTheWeek() {
               
     return this._http
-      .get('negociacoes/semana')
+      .get('http://localhost:3000/negociacoes/semana')
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
@@ -70,7 +70,7 @@ export class NegotiationService {
   
   getPreviousWeeksTrades() {
     return this._http
-      .get('negociacoes/anterior')
+      .get('http://localhost:3000/negociacoes/anterior')
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
@@ -83,7 +83,7 @@ export class NegotiationService {
   getLastWeeksTrades() {
               
     return this._http
-      .get('negociacoes/retrasada')
+      .get('http://localhost:3000/negociacoes/retrasada')
       .then(negotiations => {
         return negotiations.map((obj) => new Negotiation(new Date(obj.data), obj.quantidade, obj.valor));
       })
